@@ -1,5 +1,7 @@
 "use client";
 
+import Button from "@/app/components/Button";
+import ProductImage from "@/app/components/products/ProductImage";
 import SetColor from "@/app/components/products/SetColor";
 import SetQuantity from "@/app/components/products/SetQunatity";
 import { Rating } from "@mui/material";
@@ -24,7 +26,7 @@ export type CartProductType = {
   price: number;
 };
 const Horizontal = () => {
-  return <hr className="w-[30% my-2]" />;
+  return <hr className="w-[30% my-2] mb-2 mt-2" />;
 };
 const ProductDetails: React.FC<ProductDetailProps> = ({ product }) => {
   const [cartProduct, setCartProduct] = useState<CartProductType>({
@@ -66,7 +68,11 @@ const ProductDetails: React.FC<ProductDetailProps> = ({ product }) => {
   }, [cartProduct]);
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-      <div>images</div>
+      <ProductImage
+        cartProduct={cartProduct}
+        product={product}
+        handleColorSelect={handleColorSelect}
+      />
       <div className="flex flex-col gap-1 text-slate-500">
         <h2 className="text-3xl font-medium text-slate-700"> {product.name}</h2>
         <div className="flex items-center gap-2">
@@ -77,11 +83,11 @@ const ProductDetails: React.FC<ProductDetailProps> = ({ product }) => {
         <div className="text-justify">{product.description}</div>
         <Horizontal />
         <div>
-          <span className="font-semibold">CATEGORY :</span>
+          <span className="font-semibold">CATEGORY : </span>
           {product.category}
         </div>
         <div>
-          <span className="font-semibold">Brand :</span>
+          <span className="font-semibold">Brand : </span>
           {product.brand}
         </div>
         <div className={product.inStock ? "text-teal-400" : "text-rose-400"}>
@@ -100,7 +106,9 @@ const ProductDetails: React.FC<ProductDetailProps> = ({ product }) => {
           handleQuantityDecrease={handleQuantityDecrease}
         />
         <Horizontal />
-        <div>Add To Cart</div>
+        <div className="max-w-[300px] mt-2">
+          <Button label="Add To Cart" onClick={() => {}} />
+        </div>
       </div>
     </div>
   );
