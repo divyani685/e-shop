@@ -1,3 +1,4 @@
+import CartProvider from "@/provider/CartProvider";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Footer from "./components/footer/Footer";
@@ -19,11 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className}text-slate-700`}>
-        <div className="flex flex-col min-h-screen">
-          <NavBar />
-          <main className="flex-grow"> {children}</main>
-          <Footer />
-        </div>
+        <CartProvider>
+          <div className="flex flex-col min-h-screen">
+            <NavBar />
+            <main className="flex-grow"> {children}</main>
+            <Footer />
+          </div>
+        </CartProvider>
       </body>
     </html>
   );
