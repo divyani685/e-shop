@@ -14,7 +14,10 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
-
+::selection{
+  color: white;
+  background: rgb(123, 218, 123);
+}
 body {
   color: rgb(var(--foreground-rgb));
 
