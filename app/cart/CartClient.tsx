@@ -1,12 +1,13 @@
 "use client";
 import { useCart } from "@/hooks/useCart";
+import { formatPrice } from "@/utils/formatPrice";
 import Link from "next/link";
 import { IoMdArrowBack } from "react-icons/io";
 import Button from "../components/Button";
 import Heading from "../components/Heading";
 import ItemContent from "./ItemContent";
 const CartClient = () => {
-  const { cartProducts, handleClearCart } = useCart();
+  const { cartProducts, handleClearCart, cartTotalAmount } = useCart();
   if (!cartProducts || cartProducts.length == 0) {
     return (
       <div className="flex flex-col items-center">
@@ -17,7 +18,7 @@ const CartClient = () => {
             className="text-slate-500 flex items-center gap-1 mt-2"
           >
             <IoMdArrowBack />
-            <span>start Shopping</span>
+            <span>Start Shopping</span>
           </Link>
         </div>
       </div>
@@ -52,7 +53,7 @@ const CartClient = () => {
         <div className="text-sm flex flex-col gap-1 items-center">
           <div className="flex justify-between w-full  font-semibold">
             <span>Subtotal</span>
-            <span>$100</span>
+            <span>{formatPrice(cartTotalAmount)}</span>
           </div>
           <p className="text-slate-500">
             Taxes and shipping calculate at checkout

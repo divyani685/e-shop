@@ -16,7 +16,7 @@
 }
 ::selection{
   color: white;
-  background: rgb(123, 218, 123);
+  background: #94a3b8;
 }
 body {
   color: rgb(var(--foreground-rgb));
