@@ -40,11 +40,11 @@ const LoginForm = () => {
         setIsLoading(false);
         router.push("/cart");
         router.refresh();
-        toast.success("Login Successfully");
+        toast.success(response.msg);
       }
       if (!response.success) {
         setIsLoading(false);
-        toast.error(response.error);
+        toast.error(response.error.msg);
       }
       console.log(response);
     } catch (error) {

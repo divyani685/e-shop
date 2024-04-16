@@ -39,10 +39,10 @@ const RegisterForm = () => {
         setIsLoading(false);
         router.push("/login");
         router.refresh();
-        toast.success("Account Created Successfully");
+        toast.success(response.msg);
       } else {
         setIsLoading(false);
-        toast.error(response.error);
+        toast.error(response.error.msg);
       }
       console.log(response);
     } catch (error) {

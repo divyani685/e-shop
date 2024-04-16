@@ -1,8 +1,10 @@
 "use client";
 
+import { BASE_URL } from "@/utils/config";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import Button from "../components/Button";
 import Heading from "../components/Heading";
 import Input from "../components/input/Input";
@@ -16,40 +18,37 @@ const ForgotPasswordForm = () => {
     formState: { errors },
   } = useForm<FieldValues>();
   const onsubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log("data");
-    router.push("/otp-verification");
-    // try {
-    //   setIsLoading(true);
-    //   console.log({ data });
-    //   const res = await fetch(`${BASE_URL}/login`, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(data),
-    //   });
-    //   console.log({ res });
-    //   const response = await res.json();
-    //   if (response.success) {
-    //     setIsLoading(false);
-    //     router.push("/cart");
-    //     router.refresh();
-    //     toast.success("Login Successfully");
-    //   } else {
-    //     setIsLoading(false);
-    //     toast.error(response.error);
-    //   }
-    //   console.log(response);
-    // } catch (error) {
-    //   console.log("error", error);
-    // }
+    try {
+      setIsLoading(true);
+
+      const res = await fetch(`${BASE_URL}/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      console.log({ res });
+      const response = await res.json();
+      if (response.success) {
+        setIsLoading(false);
+        router.push("/otp-verification");
+        router.refresh();
+        toast.success(response.msg);
+      } else {
+        setIsLoading(false);
+        toast.error(response.error.msg);
+      }
+      console.log({ response });
+    } catch (error) {
+      throw error;
+    }
   };
   return (
     <>
       <Heading title="Forgot your password?" />
-
       <Input
-        id="forgotPassword"
+        id="email"
         label="Enter mobile no. or email id"
         disabled={isLoading}
         register={register}
