@@ -1,7 +1,6 @@
 "use client";
 
-import Axios from "axios";
-import { signIn } from "next-auth/react";
+import { BASE_URL } from "@/utils/config";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -25,32 +24,30 @@ const RegisterForm = () => {
       password: "",
     },
   });
-  const onsubmit: SubmitHandler<FieldValues> = (data) => {
-    setIsLoading(true);
-    console.log({ data });
-    Axios.post("/api/register", data)
-      .then(() => {
-        toast.success("Account created");
-        signIn("credentials", {
-          email: data.email,
-          password: data.password,
-          redirect: false,
-        }).then((callback) => {
-          if (callback?.ok) {
-            router.push("/cart");
-            router.refresh();
-            toast.success("Logged In");
-          }
-          if (callback?.error) {
-            toast.error(callback.error);
-          }
-        });
-      })
-      .catch((error) => {
-        console.log({ error });
-        toast.error("Something went wrong");
-      })
-      .finally(() => setIsLoading(false));
+  const onsubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${BASE_URL}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const response = await res.json();
+      if (response.success) {
+        setIsLoading(false);
+        router.push("/login");
+        router.refresh();
+        toast.success("Account Created Successfully");
+      } else {
+        setIsLoading(false);
+        toast.error(response.error);
+      }
+      console.log(response);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
   return (
     <>

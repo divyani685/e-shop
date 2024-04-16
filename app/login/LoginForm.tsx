@@ -1,8 +1,11 @@
 "use client";
 
+import { BASE_URL } from "@/utils/config";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { RiGoogleFill } from "react-icons/ri";
 import Button from "../components/Button";
 import Heading from "../components/Heading";
@@ -10,6 +13,7 @@ import Input from "../components/input/Input";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -20,9 +24,32 @@ const LoginForm = () => {
       password: "",
     },
   });
-  const onsubmit: SubmitHandler<FieldValues> = (data) => {
-    setIsLoading(true);
-    console.log({ data });
+  const onsubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      setIsLoading(true);
+      const res = await fetch(`${BASE_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      console.log({ res });
+      const response = await res.json();
+      if (response.success) {
+        setIsLoading(false);
+        router.push("/cart");
+        router.refresh();
+        toast.success("Login Successfully");
+      }
+      if (!response.success) {
+        setIsLoading(false);
+        toast.error(response.error);
+      }
+      console.log(response);
+    } catch (error) {
+      console.log("error", error);
+    }
   };
   return (
     <>
@@ -51,6 +78,9 @@ const LoginForm = () => {
         required
         type="password"
       />
+      <div className="self-end underline underline-offset-2 text-slate-600 text-sm font-medium">
+        <Link href={"/forgot-password"}>Forgot Password?</Link>
+      </div>
       <Button
         label={isLoading ? "Loading..." : "Sign In"}
         onClick={handleSubmit(onsubmit)}
