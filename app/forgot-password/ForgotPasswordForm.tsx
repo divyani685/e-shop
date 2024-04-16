@@ -32,7 +32,9 @@ const ForgotPasswordForm = () => {
       const response = await res.json();
       if (response.success) {
         setIsLoading(false);
-        router.push("/otp-verification");
+        const email = encodeURIComponent(data.email);
+        router.push(`/otp-verification?email=${email}`);
+
         router.refresh();
         toast.success(response.msg);
       } else {
