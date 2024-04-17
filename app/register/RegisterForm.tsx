@@ -40,7 +40,8 @@ const RegisterForm = () => {
         router.push("/login");
         router.refresh();
         toast.success(response.msg);
-      } else {
+      }
+      if (!response.success) {
         setIsLoading(false);
         toast.error(response.error.msg);
       }

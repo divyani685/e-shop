@@ -37,7 +37,8 @@ const ForgotPasswordForm = () => {
 
         router.refresh();
         toast.success(response.msg);
-      } else {
+      }
+      if (!response.success) {
         setIsLoading(false);
         toast.error(response.error.msg);
       }
@@ -51,7 +52,7 @@ const ForgotPasswordForm = () => {
       <Heading title="Forgot your password?" />
       <Input
         id="email"
-        label="Enter mobile no. or email id"
+        label="Enter registered email id"
         disabled={isLoading}
         register={register}
         errors={errors}

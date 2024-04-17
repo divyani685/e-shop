@@ -1,8 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { BASE_URL } from "@/utils/config";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import Button from "../components/Button";
 import Heading from "../components/Heading";
 import Input from "../components/input/Input";
@@ -10,39 +12,49 @@ import Input from "../components/input/Input";
 const ResetPasswordForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const [email, setEmail] = useState<any>("");
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams) {
+      setEmail(searchParams.get("email"));
+    }
+  }, [searchParams]);
+  console.log("email id--", email);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>();
-  const onsubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log(data);
-    router.push("/login");
-    // try {
-    //   setIsLoading(true);
-    //   console.log({ data });
-    //   const res = await fetch(`${BASE_URL}/login`, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(data),
-    //   });
-    //   console.log({ res });
-    //   const response = await res.json();
-    //   if (response.success) {
-    //     setIsLoading(false);
-    //     router.push("/cart");
-    //     router.refresh();
-    //     toast.success("Login Successfully");
-    //   } else {
-    //     setIsLoading(false);
-    //     toast.error(response.error);
-    //   }
-    //   console.log(response);
-    // } catch (error) {
-    //   console.log("error", error);
-    // }
+  const onsubmit: SubmitHandler<FieldValues> = async (data: any) => {
+    // const val = JSON.stringify({ data, email });
+    // console.log(val);
+    try {
+      setIsLoading(true);
+      console.log("input data--", data);
+      const res = await fetch(`${BASE_URL}/reset-password`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data, email }),
+      });
+      console.log({ res });
+      const response = await res.json();
+      if (response.success) {
+        setIsLoading(false);
+        router.push(`/login`);
+        router.refresh();
+        toast.success(response.msg);
+      }
+      if (!response.success) {
+        setIsLoading(false);
+        toast.error(response.error.msg);
+      }
+      console.log({ response });
+    } catch (error) {
+      throw error;
+    }
   };
   return (
     <>

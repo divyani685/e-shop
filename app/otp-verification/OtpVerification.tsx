@@ -13,7 +13,7 @@ import Input from "../components/input/Input";
 const OtpVerificationForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const [email, setEmail] = useState<string | null>(""); // Initialize as null
+  const [email, setEmail] = useState<any>("");
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -40,10 +40,11 @@ const OtpVerificationForm = () => {
       const response = await res.json();
       if (response.success) {
         setIsLoading(false);
-        router.push("/reset-password");
+        router.push(`/reset-password?email=${email}`);
         router.refresh();
         toast.success(response.msg);
-      } else {
+      }
+      if (!response.success) {
         setIsLoading(false);
         toast.error(response.error.msg);
       }
@@ -52,10 +53,11 @@ const OtpVerificationForm = () => {
       throw error;
     }
   };
+  const handleResend = () => {};
   return (
     <>
       <Heading title="OTP Verification" />
-      <p>Enter OTP Sent to your registered mobile number/email id.</p>
+      <p>Enter OTP Sent to your registered email id.</p>
       <Input
         id="otp"
         label="Enter OTP"
@@ -67,7 +69,9 @@ const OtpVerificationForm = () => {
       <div className="self-end text-sm ">
         Did not receive OTP?
         <span className=" underline  text-slate-600 font-medium">
-          <Link href={"/forgot-password"}>Resend</Link>
+          <Link href={"/forgot-password"} onClick={() => handleResend()}>
+            Resend
+          </Link>
         </span>
       </div>
 
