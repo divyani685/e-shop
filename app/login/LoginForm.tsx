@@ -37,11 +37,15 @@ const LoginForm = () => {
       console.log({ res });
       const response = await res.json();
       if (response.success) {
+        if (response.token) {
+          localStorage.setItem("accessToken", JSON.stringify(response.token));
+        }
         setIsLoading(false);
         router.push("/cart");
         router.refresh();
         toast.success(response.msg);
       }
+
       if (!response.success) {
         setIsLoading(false);
         toast.error(response.error.msg);
