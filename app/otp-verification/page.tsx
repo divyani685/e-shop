@@ -1,6 +1,6 @@
 import Container from "../components/Container";
 import FormWrap from "../components/FormWrap";
-import OtpVerificationForm from "./OtpVerification";
+import OtpVerificationForm from "./OtpVerificationForm";
 
 const OtpVerification = () => {
   return (

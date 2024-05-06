@@ -2,7 +2,7 @@
 
 import { BASE_URL } from "@/utils/config";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Button from "../components/Button";
@@ -58,29 +58,31 @@ const ResetPasswordForm = () => {
   };
   return (
     <>
-      <Heading title="Reset your password" />
-      <Input
-        id="newpassword"
-        label="New Password"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-        type="password"
-      />
-      <Input
-        id="password"
-        label="Confirm New Password"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-        type="password"
-      />
-      <Button
-        label={isLoading ? "Loading..." : "Submit"}
-        onClick={handleSubmit(onsubmit)}
-      />
+      <Suspense>
+        <Heading title="Reset your password" />
+        <Input
+          id="newpassword"
+          label="New Password"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+          type="password"
+        />
+        <Input
+          id="password"
+          label="Confirm New Password"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+          type="password"
+        />
+        <Button
+          label={isLoading ? "Loading..." : "Submit"}
+          onClick={handleSubmit(onsubmit)}
+        />
+      </Suspense>
     </>
   );
 };
