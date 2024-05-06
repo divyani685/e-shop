@@ -1,5 +1,6 @@
 "use client";
 
+import useAuth from "@/hooks/useAuth";
 import { BASE_URL } from "@/utils/config";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,6 +14,7 @@ import Input from "../components/input/Input";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { getUser } = useAuth();
   const router = useRouter();
   const {
     register,
@@ -27,20 +29,19 @@ const LoginForm = () => {
   const onsubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
       setIsLoading(true);
+      const headers: any = { "Content-Type": "application/json" };
       const res = await fetch(`${BASE_URL}/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify(data),
       });
       console.log({ res });
       const response = await res.json();
+
       if (response.success) {
-        if (response.token) {
-          localStorage.setItem("accessToken", JSON.stringify(response.token));
-        }
         setIsLoading(false);
+        localStorage.setItem("accessToken", JSON.stringify(response.token));
+        headers["Authorization"] = `Bearer ${response?.token}`;
         router.push("/cart");
         router.refresh();
         toast.success(response.msg);
@@ -90,7 +91,7 @@ const LoginForm = () => {
         onClick={handleSubmit(onsubmit)}
       />
       <p className="text-sm ">
-        Don't have an account?{" "}
+        {`Don't have an account?`}
         <Link
           href={"/register"}
           className="underline font-semibold text-slate-700"

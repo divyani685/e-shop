@@ -1,14 +1,15 @@
 "use client";
 
+import useAuth from "@/hooks/useAuth";
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { AiFillCaretDown } from "react-icons/ai";
 import Avatar from "../Avatar";
 import BackDrop from "./BackDrop";
 import MenuItem from "./MenuItem";
-
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { setToken, getUser, logout } = useAuth();
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
