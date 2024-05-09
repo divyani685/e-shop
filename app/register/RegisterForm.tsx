@@ -1,18 +1,17 @@
 "use client";
 
-import { BASE_URL } from "@/utils/config";
+import useMutation from "@/hooks/useMounted";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { RiGoogleFill } from "react-icons/ri";
 import Button from "../components/Button";
 import Heading from "../components/Heading";
 import Input from "../components/input/Input";
 const RegisterForm = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { mutation, isLoading } = useMutation();
   const {
     register,
     handleSubmit,
@@ -24,30 +23,45 @@ const RegisterForm = () => {
       password: "",
     },
   });
+  // const onsubmit: SubmitHandler<FieldValues> = async (data) => {
+  //   try {
+  //     setIsLoading(true);
+  //     const res = await fetch(`${BASE_URL}/register`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(data),
+  //     });
+  //     const response = await res.json();
+  //     if (response.success) {
+  //       setIsLoading(false);
+  //       router.push("/login");
+  //       router.refresh();
+  //       toast.success(response.msg);
+  //     }
+  //     if (!response.success) {
+  //       setIsLoading(false);
+  //       toast.error(response.error.msg);
+  //     }
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log("error", error);
+  //   }
+  // };
   const onsubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
-      setIsLoading(true);
-      const res = await fetch(`${BASE_URL}/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const res = await mutation("register", {
+        isAlert: true,
+        body: data,
       });
-      const response = await res.json();
-      if (response.success) {
-        setIsLoading(false);
+      console.log({ res });
+      if (res?.results?.success) {
         router.push("/login");
         router.refresh();
-        toast.success(response.msg);
       }
-      if (!response.success) {
-        setIsLoading(false);
-        toast.error(response.error.msg);
-      }
-      console.log(response);
     } catch (error) {
-      console.log("error", error);
+      console.log({ error });
     }
   };
   return (

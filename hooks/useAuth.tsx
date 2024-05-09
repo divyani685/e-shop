@@ -1,57 +1,64 @@
-import { BASE_URL } from "@/utils/config";
+import {
+  BASE_URL,
+  getFromLocalStorage,
+  removeFromLocalStorage,
+} from "@/utils/config";
 import { create } from "zustand";
 
+type UserType = {
+  id: string;
+  manufacturename: string;
+  email: string;
+  fullName: string;
+  name: string;
+  role: string;
+  phone: number;
+};
 type AuthState = {
   isUserLoading: boolean;
-  user?: any;
-  setUser: (user: any) => Promise<void>;
+  user?: Partial<UserType>;
+  setUser: (user: Partial<UserType>) => Promise<void>;
   setToken: (token: string) => Promise<void>;
   logout: () => void;
-  getUser: () => Promise<void>;
+  getUser: () => void;
 };
+
 const useAuth = create<AuthState>((set) => ({
   isUserLoading: true,
-  user: undefined,
-  setUser: async (user: any) => {
-    set({
-      user: { ...user },
-    });
+  user: {},
+  setUser: async (user: Partial<UserType>) => {
+    set({ user: { ...user } });
   },
   async setToken(accessToken) {
-    await localStorage.setItem("accessToken", JSON.stringify(accessToken));
+    await localStorage.setItem("ACCESS_TOKEN", JSON.stringify(accessToken));
   },
-  async logout() {
+  logout() {
     set({ user: undefined });
-    await localStorage.removeItem("accessToken");
+    removeFromLocalStorage("ACCESS_TOKEN");
   },
   getUser: async () => {
-    // console.log('getUser');
+    const accessToken = getFromLocalStorage("ACCESS_TOKEN");
+    if (!accessToken) {
+      set({ user: {}, isUserLoading: false });
+      return;
+    }
     try {
-      const accessToken = await localStorage.getItem("accessToken");
-      if (!accessToken) {
-        set({ user: undefined, isUserLoading: false });
-        return;
-      }
-
-      const res = await fetch(`${BASE_URL}/users/current/user`, {
+      const res = await fetch(`${BASE_URL}/self`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      // const data = await res.json();
-      // console.log('data==>', data);
 
-      if (res?.status === 401) {
-        await localStorage?.removeItem("accessToken");
-        set({ user: undefined, isUserLoading: false });
+      if (res?.status !== 200) {
+        window?.localStorage?.removeItem("ACCESS_TOKEN");
+        set({ user: {}, isUserLoading: false });
       }
       if (res?.status === 200) {
-        const data = await res.json();
+        const jsonData = await res.json();
 
-        const userData = data?.data;
-        // console.log(data?.results?.user);
+        const userData = jsonData?.data;
         set({ user: { ...userData }, isUserLoading: false });
       }
     } catch (error) {
